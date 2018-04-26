@@ -11,36 +11,28 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "95e17af2-0b5e-4115-a01b-4337d03e4956",
+						"id": "ac5af623-ce53-4cc1-9161-76e67eba91e6",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"",
-							"",
 							"pm.test(\"Response time is less than 200ms\", function () {",
 							"    pm.expect(pm.response.responseTime).to.be.below(200);",
 							"});",
-							"",
-							"",
 							"",
 							"pm.test(\"Content-Type is present\", function () {",
 							"    pm.response.to.have.header(\"Content-Type\");",
 							"});",
 							"",
-							"",
-							"",
-							"pm.test(\"Body matches string\", function () {",
+							"pm.test(\"Body matches string loadbalancername\", function () {",
 							"    pm.expect(pm.response.text()).to.include(\"QALoad\");",
 							"});",
 							"",
-							"pm.test(\"Body matches string\", function () {",
+							"pm.test(\"Body matches string flavor\", function () {",
 							"    pm.expect(pm.response.text()).to.include(\"t2.small\");",
 							"});",
-							"",
-							"postman.setEnvironmentVariable(\"\");",
 							"",
 							"pm.test(\"Successful POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
@@ -62,10 +54,14 @@
 					"raw": "{\r\n        \"SecurityGroup\": {\r\n        \"securitygroupname\": \"QAsec\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"compute\": {\r\n        \"InstanceName\": \"qa1instance\",\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.small\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"QAsec\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"900\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"true\",\r\n        \"Encrypted\": \"true\",\r\n        \"DependsOn\": [\"QALoad\", \"QAsec\", \"QAVolume\"]\r\n    },\r\n    \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"QALoad\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"LASTTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"qa1instance\",\r\n        \"InstanceId\": \"\"\r\n    },\r\n    \"volume\": {\r\n        \"KmsKeyId\": \"0f728ede-6c17-4fb4-8f40-728e9ec3cf82\",\r\n        \"VolumeName\": \"QAVolume\",\r\n        \"DeviceName\": \"/dev/sdc\",\r\n        \"Device\": \"/dev/sdc\",\r\n        \"VolumeSize\": \"90\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"400\",\r\n        \"SnapshotId\": \"\",\r\n        \"Encrypted\": \"true\",\r\n        \"Size\": \"10\",\r\n        \"AvailabilityZone\": \"us-west-2a\",\r\n        \"VolumeAttachmentName\": \"testall\",\r\n        \"InstanceName\": \"qa1instance\",\r\n        \"name\": \"storage\"\r\n    }\r\n}"
 				},
 				"url": {
-					"raw": "{{APIurl}}/matilda/stack/aws",
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
 					"host": [
-						"{{APIurl}}"
+						"192",
+						"168",
+						"10",
+						"226"
 					],
+					"port": "9009",
 					"path": [
 						"matilda",
 						"stack",
