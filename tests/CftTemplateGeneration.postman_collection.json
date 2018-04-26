@@ -1,0 +1,1295 @@
+{
+	"info": {
+		"_postman_id": "a9064a5c-23c1-52ce-6bf8-2171f8cea7e0",
+		"name": "CftTemplateGeneration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "AllResources",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "95e17af2-0b5e-4115-a01b-4337d03e4956",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"QALoad\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.small\");",
+							"});",
+							"",
+							"postman.setEnvironmentVariable(\"\");",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"SecurityGroup\": {\r\n        \"securitygroupname\": \"QAsec\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"compute\": {\r\n        \"InstanceName\": \"qa1instance\",\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.small\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"QAsec\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"900\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"true\",\r\n        \"Encrypted\": \"true\",\r\n        \"DependsOn\": [\"QALoad\", \"QAsec\", \"QAVolume\"]\r\n    },\r\n    \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"QALoad\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"LASTTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"qa1instance\",\r\n        \"InstanceId\": \"\"\r\n    },\r\n    \"volume\": {\r\n        \"KmsKeyId\": \"0f728ede-6c17-4fb4-8f40-728e9ec3cf82\",\r\n        \"VolumeName\": \"QAVolume\",\r\n        \"DeviceName\": \"/dev/sdc\",\r\n        \"Device\": \"/dev/sdc\",\r\n        \"VolumeSize\": \"90\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"400\",\r\n        \"SnapshotId\": \"\",\r\n        \"Encrypted\": \"true\",\r\n        \"Size\": \"10\",\r\n        \"AvailabilityZone\": \"us-west-2a\",\r\n        \"VolumeAttachmentName\": \"testall\",\r\n        \"InstanceName\": \"qa1instance\",\r\n        \"name\": \"storage\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{APIurl}}/matilda/stack/aws",
+					"host": [
+						"{{APIurl}}"
+					],
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "New CFT Template"
+			},
+			"response": []
+		},
+		{
+			"name": "ComputewithVolume",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ffaaa901-1563-4359-a1e2-38abeb306da9",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string imageid\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ami-223f945a\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string flavor\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.nano\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n    \"compute\": {\r\n        \"InstanceName\": \"TestApr17\",\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.nano\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"default\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdc\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"1000\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"AvailabilityZone\": \"us-west-2a\",\r\n        \"Encrypted\": \"true\",\r\n        \"DependsOn\": [\"Aprilvol\"]\r\n    },\r\n    \"volume\": {\r\n        \"KmsKeyId\": \"0f728ede-6c17-4fb4-8f40-728e9ec3cf82\",\r\n        \"VolumeName\": \"Aprilvol\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"Device\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"90\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"100\",\r\n        \"SnapshotId\": \"\",\r\n        \"Encrypted\": \"true\",\r\n        \"Size\": \"10\",\r\n        \"AvailabilityZone\": \"us-west-2a\",\r\n        \"VolumeAttachmentName\": \"test\",\r\n        \"InstanceName\": \"TestApr17\",\r\n        \"name\": \"storage\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "Ec2 and Volume"
+			},
+			"response": []
+		},
+		{
+			"name": "ComputeWithSecurityandVolume",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "15a9144a-74fa-4670-b7b3-e8b2b789cecd",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string instancename\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"QAMarchInstance\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string flavor\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.micro\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"SecurityGroup\": {\r\n        \"securitygroupname\": \"QAMarchSec\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"compute\": {\r\n        \"InstanceName\": \"QAMarchInstance\",\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"QAMarchSec\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"50\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"1000\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"True\",\r\n        \"Encrypted\": \"true\",\r\n        \"DependsOn\": [\"QAMarchSec\", \"QAMarchVolume\"]\r\n    },\r\n    \"volume\": {\r\n        \"KmsKeyId\": \"0f728ede-6c17-4fb4-8f40-728e9ec3cf82\",\r\n        \"VolumeName\": \"QAMarchVolume\",\r\n        \"DeviceName\": \"/dev/sdc\",\r\n        \"Device\": \"/dev/sdc\",\r\n        \"VolumeSize\": \"90\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"100\",\r\n        \"SnapshotId\": \"\",\r\n        \"Encrypted\": \"true\",\r\n        \"Size\": \"10\",\r\n        \"AvailabilityZone\": \"us-west-2a\",\r\n        \"VolumeAttachmentName\": \"test\",\r\n        \"InstanceName\": \"QAMarchInstance\",\r\n        \"name\": \"storage\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "Volume Payload"
+			},
+			"response": []
+		},
+		{
+			"name": "ComputeWithSecurityGrp",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6a7f2d49-9d37-433c-9bd8-2bca18b69d5f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string securitygrpname\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Testgrp\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string flavor\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.nano\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{                            \r\n\"compute\": {                          \r\n        \"InstanceName\": \"TestInstance4\",                    \r\n        \"image\": \"ami-f2d3638a\",            \r\n        \"flavor\": \"t2.nano\",                      \r\n        \"KeyName\": \"sample\",                      \r\n        \"SecurityGroups\": [\"default\",\"Testgrp\"],                  \r\n        \"IamInstanceProfile\": \"EC2AccessRole\",                \r\n        \"DeviceName\": \"/dev/sdc\",                    \r\n        \"VolumeSize\": \"50\",                      \r\n        \"VolumeType\": \"io1\",                      \r\n        \"Iops\": \"505\",                        \r\n        \"SnapshotId\": \"snap-0001ef6d\",                      \r\n        \"DeleteOnTermination\": \"True\",                    \r\n        \"Encrypted\": \"\",                        \r\n        \"DependsOn\": [\"Testgrp\"]                    \r\n      },\r\n      \"SecurityGroup\": {\r\n        \"securitygroupname\": \"Testgrp\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"tcp\",\r\n            \"FromPort\": \"80\",\r\n            \"ToPort\": \"80\",\r\n            \"CidrIp\": \"172.32.0.0/16\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"tcp\",\r\n            \"FromPort\": \"22\",\r\n            \"ToPort\": \"22\",\r\n            \"CidrIp\": \"172.32.0.0/16\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\"\r\n      }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "Intsnace and security group"
+			},
+			"response": []
+		},
+		{
+			"name": "Compute with load and autoscaling",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ec60febc-e84e-4d56-a4aa-9973715b2e0c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string loadbalancername\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"TestLoadBal1\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string flavor\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.micro\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{                            \r\n   \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"TestLoadBal1\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"TestWebGrp1\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"TestInstance2\"\r\n      },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"sg-0455aa7a\"],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [\"TestLoadBal1\"],\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sda\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"SnapshotId\": \"snap-0001ef6d\",\r\n        \"Iops\": \"1000\",\r\n        \"DeleteOnTermination\": \"True\",\r\n        \"Encrypted\": \"\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"240\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"TestLoadBal1\", \"ALBListener\"]\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Autoscale with Loadbalancing",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "612cafef-c39b-4bcc-bf82-f6178bf9515d",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string imageid\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ami-f2d3638a\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string flavor\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.micro\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"TestLoadBal\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"ALBTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"\"\r\n    },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [],\r\n        \"TargetGroupARNs\": \"ALBTargetGroup\",\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"75\",\r\n        \"VolumeType\": \"io1\",\r\n        \"SnapshotId\": \"\",\r\n        \"Iops\": \"750\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"InstanceId\": \"\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"300\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"ALBListener\", \"TestLoadBal\"]\r\n\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "Autoscale with Loadbalancing"
+			},
+			"response": []
+		},
+		{
+			"name": "AutoscalingwithSecurity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12c564d3-65a2-4bfe-b2f4-65c9fa516b00",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string securitygrpname\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"QASecurity\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string zone\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"us-west-2a\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SecurityGroup\": {\r\n        \"securitygroupname\": \"QASecurity\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.nano\",\r\n        \"IamInstanceProfile\": \"EC2-role\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"QASecurity\"],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [],\r\n        \"TargetGroupARNs\": \"\",\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"100\",\r\n        \"VolumeType\": \"io1\",\r\n        \"SnapshotId\": \"\",\r\n        \"Iops\": \"1000\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"InstanceId\": \"\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"300\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"QASecurity\"]\r\n\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "AutoscalingwithSecurity"
+			},
+			"response": []
+		},
+		{
+			"name": "AutoscalePlusSecurityPlusLoad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ced0e9c-3161-4671-b5e2-bc3454894520",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string imageoffer\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ubuntu\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string flavor\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.small\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SecurityGroup\": {\r\n        \"securitygroupname\": \"donotdelete\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.small\",\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"donotdelete\"],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [\"QALoadBal\"],\r\n        \"TargetGroupARNs\": \"FirstTargetGroup\",\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sdC\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"gp2\",\r\n        \"SnapshotId\": \"snap-0001ef6d\",\r\n        \"Iops\": \"900\",\r\n        \"DeleteOnTermination\": \"true\",\r\n        \"Encrypted\": \"\",\r\n        \"InstanceId\": \"\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"300\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"donotdelete\", \"QALoadBal\", \"ALBListener\"]\r\n\r\n    },\r\n  \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"QALoadBal\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"FirstTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"\"\r\n    }\r\n}\r\n"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Compute With Load Balancing",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e91a965-041b-415b-9e7c-3177e3f49a64",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string IamInstanceRole\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"EC2-role\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string flavor\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"t2.small\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"compute\": {\r\n        \"InstanceName\": \"QA9Instance\",\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.small\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"default\"],\r\n        \"IamInstanceProfile\": \"EC2-role\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"50\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"1000\",\r\n        \"SnapshotId\": \"snap-00054e39\",\r\n        \"DeleteOnTermination\": \"true\",\r\n        \"Encrypted\": \"\",\r\n        \"DependsOn\": [\"QA9Load\"]\r\n    },\r\n    \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"QA9Load\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"ALBMTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"QA9Instance\",\r\n        \"InstanceId\": \"\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "Compute With Load Balancing"
+			},
+			"response": []
+		},
+		{
+			"name": "Compute with Load and Security",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d934a71f-939c-49c7-adf7-dd47f66fd09c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string KEYNAME\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"sample\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string ImagePublisher\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"canonical\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SecurityGroup\": {\r\n        \"securitygroupname\": \"QA10SEC\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"compute\": {\r\n        \"InstanceName\": \"QA10INSTANCE\",\r\n        \"image\": \"ami-f2d3638a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"QA10SEC\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"800\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"DependsOn\": [\"QA10LOAD\", \"QA10SEC\"]\r\n    },\r\n    \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"QA10LOAD\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"ALBTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"QA10INSTANCE\",\r\n        \"InstanceId\": \"\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "only Compute",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2fa9511b-acd6-4c2f-b68b-586dbd98fec6",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string IamInstanceProfile\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"EC2AccessRole\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string InstanceName\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"QAINST\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{                            \r\n  \"compute\": {                          \r\n        \"InstanceName\": \"QAINST\",                    \r\n        \"image\": \"ami-f2d3638a\",            \r\n        \"flavor\": \"t2.micro\",                      \r\n        \"KeyName\": \"sample\",                      \r\n        \"SecurityGroups\": [\"default\"],                  \r\n        \"IamInstanceProfile\": \"EC2AccessRole\",          \r\n        \"DependsOn\": []                    \r\n    }                        \r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "only Compute"
+			},
+			"response": []
+		},
+		{
+			"name": "Only Security Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "70be487c-2160-4313-ba02-cddd598f740e",
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"",
+							"tests[\"status code is 200\"] = responseCode.code ===200;",
+							"",
+							"pm.test(\"Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"var contentTypeHeaderExists = responseHeaders.hasOwnProperty(\"Content-Type\");",
+							"",
+							"if (contentTypeHeaderExists) {",
+							" tests[\"Content-Type is application/json\"] =",
+							" responseHeaders[\"Content-Type\"].has(\"application/json\");",
+							" }",
+							"",
+							"var jsonData = JSON.parse(responseBody); ",
+							"tests[\"groupdescription is verified in the response\"] = jsonData.Resources.unknown.Properties.GroupDescription === \"ssh access for server\";",
+							"",
+							"pm.test(\"Body matches string VPCID\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"vpc-ad1589d4\");",
+							"});",
+							"",
+							"//pm.environment.set(\"Cidr_Ip\", jsonData.Resources.unknown.Properties.SecurityGroupEgress.CidrIp);",
+							"",
+							""
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "04c73298-49fe-42ca-bf4b-7c77de4d7f24",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{       \r\n \"SecurityGroup\": {\r\n        \"securitygroupname\": \"unknown\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "Only Security Group"
+			},
+			"response": []
+		},
+		{
+			"name": "ComputeWithService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ece683d1-0b06-4a13-9582-49087b2613b9",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string SERVICE\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"httpd\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string ImageOffer\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ubuntu\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"compute\": {\r\n        \"InstanceName\": \"QAApril17\",\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"default\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"100\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"1000\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"DependsOn\": [],\r\n        \"AvailabilityZone\": \"us-west-2a\",\r\n        \"Service\": \"httpd\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "ComputeWithService"
+			},
+			"response": []
+		},
+		{
+			"name": "AutoWithLoadWithService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "70a44775-943d-4d49-8988-388fafdc1f7b",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string TargetGrp\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ALBAMTargetGroup\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string subnet\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"subnet-a6df37ed\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"Loadqa1\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"ALBAMTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"\"\r\n    },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [],\r\n        \"TargetGroupARNs\": \"ALBAMTargetGroup\",\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"SnapshotId\": \"\",\r\n        \"Iops\": \"1000\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"InstanceId\": \"madhu05\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"300\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"ALBListener\", \"Loadqa1\"],\r\n    \"Service\": \"httpd\"\r\n\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "AutoWithLoadWithService"
+			},
+			"response": []
+		},
+		{
+			"name": "AutoscalePlusSecurityPlusService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb99ff9d-511a-487a-b59a-8a2a4fc11c62",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string network\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"admin_net\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string service\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"tomcat\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SecurityGroup\": {\r\n        \"securitygroupname\": \"Bharatqa1\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"Bharatqa1\"],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [],\r\n        \"TargetGroupARNs\": \"\",\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"100\",\r\n        \"VolumeType\": \"io1\",\r\n        \"SnapshotId\": \"\",\r\n        \"Iops\": \"1000\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"InstanceId\": \"\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"300\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"Bharatqa1\"],\r\n    \"Service\": \"tomcat\"\r\n\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "AutoscalePlusSecurityPlusService"
+			},
+			"response": []
+		},
+		{
+			"name": "AutoWithLoadwihSecurityandService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c65139a-ad4d-42ca-a8b6-ae27f2618ebf",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string CidrIP\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"0.0.0.0/0\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string IP\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"192.168.0.0/24\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SecurityGroup\": {\r\n        \"securitygroupname\": \"April18qa\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"April18qa\"],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [],\r\n        \"TargetGroupARNs\": \"ALBTargetGroup\",\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"SnapshotId\": \"\",\r\n        \"Iops\": \"1000\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"InstanceId\": \"\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"300\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"April18qa\", \"April18load\", \"ALBListener\"],\r\n      \"Service\": \"tomcat\"\r\n\r\n    },\r\n      \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"April18load\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"ALBTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "AutoWithLoadwihSecurityandService"
+			},
+			"response": []
+		},
+		{
+			"name": "ComputeLoadWithService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5549a35-f5fa-4c7b-9a96-ad63c1d9e6c3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string ENCRYPTED\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"true\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string SUBNET\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"subnet-4a348210\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"compute\": {\r\n        \"InstanceName\": \"qaapril\",\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"default\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"100\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"1000\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n    \"AvailabilityZone\": \"us-west-2a\",\r\n        \"DependsOn\": [\"qaload18\"],\r\n    \"Service\": \"tomcat\"\r\n    },\r\n    \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"qaload18\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"ALBTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"WebServer\",\r\n        \"InstanceId\": \"\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "ComputeLoadWithService"
+			},
+			"response": []
+		},
+		{
+			"name": "AutoWithLoadwihSecurityandService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "777bd6ba-4342-47de-a56b-f53e4ac87676",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string HealthCheckType\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"EC2\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string ListnerGrpName\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ALBListener\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SecurityGroup\": {\r\n        \"securitygroupname\": \"April18qa\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"autoscaling\": {\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"April18qa\"],\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"LoadBalancerNames\": [],\r\n        \"TargetGroupARNs\": \"ALBUTargetGroup\",\r\n        \"AvailabilityZones\": [\"us-west-2a\", \"us-west-2c\"],\r\n        \"HealthCheckType\": \"EC2\",\r\n        \"DesiredCapacity\": \"1\",\r\n        \"MinSize\": \"1\",\r\n        \"MaxSize\": \"3\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"80\",\r\n        \"VolumeType\": \"io1\",\r\n        \"SnapshotId\": \"\",\r\n        \"Iops\": \"1000\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n        \"InstanceId\": \"\",\r\n        \"Cooldown\": \"60\",\r\n        \"MetricName\": \"CPUUtilization\",\r\n        \"Period\": \"300\",\r\n        \"ThresholdMax\": \"90\",\r\n        \"ThresholdMin\": \"70\",\r\n        \"DependsOn\": [\"April18qa\", \"April18load\", \"ALBListener\"],\r\n      \"Service\": \"tomcat\"\r\n\r\n    },\r\n      \"LoadBalance\": {\r\n        \"LoadBalancerName\": \"April18load\",\r\n        \"Scheme\": \"internet-facing\",\r\n        \"Subnets\": [\"subnet-a6df37ed\", \"subnet-4a348210\"],\r\n        \"TargetGroupWebName\": \"ALBUTargetGroup\",\r\n        \"HealthCheckIntervalSeconds\": \"30\",\r\n        \"HealthCheckProtocol\": \"HTTP\",\r\n        \"HealthCheckTimeoutSeconds\": \"5\",\r\n        \"HealthyThresholdCount\": \"3\",\r\n        \"Port\": \"80\",\r\n        \"Protocol\": \"HTTP\",\r\n        \"UnhealthyThresholdCount\": \"5\",\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"ListenerGroupName\": \"ALBListener\",\r\n        \"ListenerPort\": \"80\",\r\n        \"ListenerProtocol\": \"HTTP\",\r\n        \"InstanceName\": \"\"\r\n    \r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "AutoWithLoadwihSecurityandService"
+			},
+			"response": []
+		},
+		{
+			"name": "ComputeWithSecurityPlusService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7927cdbf-a0a5-483c-8294-b637c8188edb",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string IOPS\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"1000\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string Image\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ami-223f945a\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"SecurityGroup\": {\r\n        \"securitygroupname\": \"april19\",\r\n        \"GroupDescription\": \"ssh access for server\",\r\n        \"SecurityGroupIngress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}\r\n        ],\r\n        \"SecurityGroupEgress\": [{\r\n            \"IpProtocol\": \"-1\",\r\n            \"FromPort\": \"-1\",\r\n            \"ToPort\": \"-1\",\r\n            \"CidrIp\": \"0.0.0.0/0\"}],\r\n        \"VpcId\": \"vpc-ad1589d4\",\r\n        \"network\": \"internal\",\r\n        \"ip\": \"192.168.0.0/24\"\r\n    },\r\n    \"compute\": {\r\n        \"InstanceName\": \"april19inst\",\r\n        \"image\": \"ami-223f945a\",\r\n        \"image_publisher\": \"canonical\",\r\n        \"image_offer\": \"ubuntu\",\r\n        \"image_sku\": \"7\",\r\n        \"network\": \"admin_net\",\r\n        \"flavor\": \"t2.micro\",\r\n        \"KeyName\": \"sample\",\r\n        \"SecurityGroups\": [\"default\", \"april19\"],\r\n        \"IamInstanceProfile\": \"EC2AccessRole\",\r\n        \"DeviceName\": \"/dev/sdb\",\r\n        \"VolumeSize\": \"100\",\r\n        \"VolumeType\": \"io1\",\r\n        \"Iops\": \"1000\",\r\n        \"SnapshotId\": \"\",\r\n        \"DeleteOnTermination\": \"false\",\r\n        \"Encrypted\": \"true\",\r\n    \"AvailabilityZone\": \"us-west-2a\",\r\n        \"DependsOn\": [\"april19\"],\r\n    \"Service\": \"httpd\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "192.168.10.226:9009/matilda/stack/aws",
+					"host": [
+						"192",
+						"168",
+						"10",
+						"226"
+					],
+					"port": "9009",
+					"path": [
+						"matilda",
+						"stack",
+						"aws"
+					]
+				},
+				"description": "ComputeWithSecurityPlusService"
+			},
+			"response": []
+		}
+	]
+}
